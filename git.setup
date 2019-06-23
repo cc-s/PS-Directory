@@ -1,0 +1,35 @@
+
+#Create folder gitrepo
+cd gitrepo/
+#Initialize repo
+git init
+
+#Create test file
+touch test.txr
+ls
+git status
+
+#Add file to be managed by git
+git add test.txr 
+git status
+
+#Publish file
+git commit -m "test" 
+ls
+git status
+
+#Commit all changes
+git commit -a -m "t"
+git status
+
+#configure global account
+git config --global user.username username
+
+
+#Add remote repository
+git remote add origin https://github.com/cc-s/PS-Directory.git
+
+#Push local file to remote repository
+git push -u origin master
+#Full remote file to local repo
+git pull  origin master -m "test"
