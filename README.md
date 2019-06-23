@@ -1,3 +1,3 @@
 # PS-Directory
 PowerShell Directory Permissions
-Script in 
+Retrieves the permissions of the directories in the targeted folder and subfolders
