@@ -159,3 +159,66 @@ $Perm.permissions | ForEach-Object {$_ | Select-Object @{name="Path";e={$($Grid.
 
 
 }#End function SubDirPermission
+
+
+
+Function Get-UserPermissionsfromDir {
+    param(
+    [Parameter(Mandatory = $true, 
+                ValueFromPipeline = $true,
+                ValueFromPipelineByPropertyName = $true, 
+                ValueFromRemainingArguments = $false, 
+                Position = 0,
+                ParameterSetName = 'Parameter Set 1')]
+                $Path,
+                $Recurce = $false
+                )
+    
+    If (Get-Module -Name ActiveDirectory -ListAvailable) {
+    
+    
+        $Perm = Get-DirectoryPermissions -Path $path  $Recurce
+    
+        $obj =  @()
+        
+        
+        foreach ($path in $perm) {
+        $users = $path.permissions.user  -match "^$env:USERDOMAIN\\" -replace '^.*\\'
+        
+            foreach ($user in $users) {
+        
+            $ADUser = Get-ADUser -Filter {SamAccountName -eq $user}
+            
+            if ($ADUser -ne $null) {
+        
+                    $Props = [ordered]@{
+                              Path = $path.path
+                              SamAccountName = $ADUser.SamAccountName
+                              GivenName = $ADUser.GivenName
+                              Permissions = ($path.Permissions | where {$_.user -like "*$user*" }).permission
+        
+        
+                              }
+        
+                $obj += New-Object -TypeName psobject -Property $Props
+        
+                } #end if User n
+        
+            }#End Foreach User
+        
+        }#End foreach Path
+    
+          
+          if ($obj) {$obj
+          
+                    }
+          else { Write-Information -MessageData "No domain users have permission on this folder" -InformationAction Continue}
+          
+    
+      }#End if module
+      else {
+      Write-Information "ActiveDirectory Module is not installed(RSAT-AD-Tools )" -InformationAction Continue
+      
+      }
+    
+    }#end Function
