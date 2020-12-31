@@ -1,0 +1,18 @@
+#Ta bort alla commits 
+
+git log --all --graph --decorate --oneline
+# Välj översta hashen 
+$ git log --all --graph --decorate --oneline
+* 7397838 (HEAD -> master, origin/master) Updates
+* 96bb24d fixes
+* 12a6976 Create README.md
+* 7da03ec First
+* 5571cac initial commit
+
+git checkout --orphan tempBranch 7397838
+git add --all
+git commit -m "Squashed all old commits"
+git rebase --onto tempBranch 7397838 master
+git log --all --graph --decorate --oneline
+git push --set-upstream origin master -f
+git branch -D tempBranch
